@@ -1,0 +1,54 @@
+# --- Python 编译缓存 ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- 虚拟环境 (Virtual Environments) ---
+# 这会忽略常见的虚拟环境文件夹名
+venv/
+env/
+ENV/
+.venv/
+.ENV/
+env.bak/
+venv.bak/
+
+# --- 你的特定环境路径 (可选) ---
+# 如果你的虚拟环境就在项目里，或者你想忽略那个 total_ENVs 文件夹
+total_ENVs/
+
+# --- IDE 和编辑器文件 ---
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# PyCharm / IntelliJ
+.idea/
+*.iml
+
+# --- 日志和数据库 ---
+*.log
+*.sqlite3
+*.db
+
+# --- 环境变量文件 ---
+# 强烈建议忽略，保护你的 API Key
+.env
+.env.local
+
+# --- 操作系统生成的文件 ---
+.DS_Store
+Thumbs.db
+
+
+/data/
+/raw_data/
+/processed_data/
+/cleaners/
+/models/
+/logs/
+/frontend/node_modules/
+*.png
