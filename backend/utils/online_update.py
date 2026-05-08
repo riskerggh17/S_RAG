@@ -10,9 +10,17 @@ import re
 import tqdm
 import pathlib
 import asyncio
+import hashlib
+import shutil
+from app.database import collection
 from app.config import UPLOAD_DATA, DEALED_DATA
+from app.rag_service import _get_embedding_model_and_tokenizer
+from app.models import get_embeddings
 from a2_section_json import smart_section_json
 
+# 全局变量，避免重复加载模型
+_model = None
+_tokenizer = None
 
 def trans_pdf_to_md(file_path: pathlib.Path):
     """
@@ -91,13 +99,58 @@ class MDcleaner:
             return None
 
 
+def generate_stable_id(path: str, content: str, index: int) -> str:
+    """
+    生成稳定的 Chunk ID
+    策略：md5(文件路径) + _ + md5(内容前100字符)
+    这样即使文件其他部分变动，只要这个块内容没变，ID 就不变
+    """
+    # 1. 文件路径哈希 (确保不同文件的相同内容 ID 不同)
+    path_hash = hashlib.md5(path.encode('utf-8')).hexdigest()[:8]
+    
+    # 2. 内容哈希 (确保内容不变 ID 就不变)
+    # 取前 100 字符足以区分大部分块，避免长文本哈希开销
+    content_sample = content[:100] if content else ""
+    content_hash = hashlib.md5(content_sample.encode('utf-8')).hexdigest()[:8]
+    
+    return f"{path_hash}_{content_hash}"
+
+async def increment_vectorization(
+        texts: list,
+        metadatas: list,
+        ids: list
+    ):
+    """
+    增量向量化并入库
+    """
+    if not texts or not metadatas:
+        return
+    # 1 加载模型和分词器
+    model, tokenizer = _get_embedding_model_and_tokenizer()
+    # 2 批量向量化
+    text_embeddings = get_embeddings(texts, model, tokenizer)
+    # 3 增量入库
+    try:
+        # 使用 upsert 实现增量更新：ID 存在则更新，不存在则插入
+        collection.upsert(
+            ids=ids,
+            embeddings=text_embeddings.tolist(),
+            documents=texts,
+            metadatas=metadatas
+        )
+        print(f"✅ 成功增量更新 {len(texts)} 条数据到 ChromaDB")
+    except Exception as e:
+        print(f"❌ 批量更新出错: {e}")
+
+
+
 
 async def onlien_deal_chain():
     """
     全自动批量处理暂存的文件
     """
     # 获取外层文件夹
-    file_categorys = [folder.name for folder in UPLOAD_DATA.glob("*/")]
+    file_categorys = [folder.name for folder in UPLOAD_DATA.iterdir() if folder.is_dir()]
     for file_category in file_categorys:
         # 在输出文件夹创建同名文件夹
         (DEALED_DATA / file_category).mkdir(parents=True, exist_ok=True)
@@ -112,11 +165,17 @@ async def onlien_deal_chain():
 
         for pdf_file in pdf_files:
             temp_file = trans_pdf_to_md(pdf_file)
-            md_files.append(temp_file)
+            if temp_file:
+                md_files.append(temp_file)
         
         for txt_file in txt_files:
             temp_file = trans_txt_to_md(txt_file)
-            md_files.append(temp_file)
+            if temp_file:
+                md_files.append(temp_file)
+        # 构造数据容器
+        batch_texts = []
+        batch_metadatas = []
+        batch_ids = []
         # 完整chain
         for md_file in tqdm.tqdm(md_files, desc=f"清洗{file_category}中"):
             # 清洗
@@ -124,13 +183,31 @@ async def onlien_deal_chain():
             if cleaned_doc is None:
                 continue
             # 切片
+            print(cleaned_doc)
             chunks = smart_section_json([cleaned_doc])
+            print(chunks)
             if chunks is None:
                 continue
+            for chunk in chunks:
+                chunk_text = chunk.page_content
+                meta = chunk.metadata
+                stable_id = meta.get('chunk_id')
+                batch_texts.append(chunk_text)
+                batch_metadatas.append(meta)
+                batch_ids.append(stable_id)
             # print(len(chunks))
             # print(chunks)
-            # 向量化
-
+        # # 向量化
+        if batch_texts and batch_metadatas and batch_ids:
+            await increment_vectorization(
+                texts=batch_texts,
+                metadatas=batch_metadatas,
+                ids=batch_ids
+            )
+        # 转移已处理文件
+        for md_file in md_files:
+            dest = DEALED_DATA / file_category / md_file.name
+            shutil.move(str(md_file), str(dest))
 
 
 

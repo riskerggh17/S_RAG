@@ -2,10 +2,9 @@
 import json
 from tqdm import tqdm
 import torch
-import chromadb
 import numpy as np
 from transformers import AutoModel, AutoTokenizer, BitsAndBytesConfig
-
+from app.database import collection
 
 def load_model_and_tokenizer(local_model_dir):
     """
@@ -40,12 +39,21 @@ def load_json_file(json_file):
         texts = [item['text'] for item in data_list]
         # 提取元数据 (用于溯源，不需要转为向量)
         metadata = [item['metadata'] for item in data_list]
+        ids = []
+        for item in data_list:
+            # 如果 metadata 里有 chunk_id 就用，否则 fallback
+            cid = item.get('chunk_id') or item['metadata'].get('chunk_id')
+            if not cid:
+                # 极端情况下的兜底
+                import hashlib
+                cid = hashlib.md5(item['text'][:100].encode()).hexdigest()
+            ids.append(cid)
         print(f"📄 成功读取 {len(texts)} 个文本切片")
-        return texts, metadata
+        return texts, metadata, ids
     
     except FileNotFoundError:
         print(f"❌ 错误：未找到文件 {json_file}")
-        return None, None
+        return None, None, None
     
 
 # ==========================================
@@ -88,24 +96,19 @@ def get_embeddings(text_list, model, tokenizer, batch_size=16):
 
 
 
-def vectorization(model_path, json_file, db_path):
+def vectorization(model_path, json_file):
     try:
         # 1 加载模型和分词器
         model, tokenizer = load_model_and_tokenizer(model_path)
         # 2 加载json文件
-        texts, metadata = load_json_file(json_file)
+        texts, metadata, ids = load_json_file(json_file)
         if texts is None or len(texts) == 0:
             return 
         # 3 批量向量化
         text_embeddings = get_embeddings(texts, model, tokenizer)
         # 4 入库
-        # 初始化
-        client = chromadb.PersistentClient(path=db_path)
-        # 创建或获取集合
-        collection = client.get_or_create_collection(name="raw_md")
         # 批量写入
-        ids = [f"id_{i}" for i in range(len(texts))]
-        collection.add(
+        collection.upsert(
             ids=ids,
             embeddings=text_embeddings.tolist(),
             documents=texts,

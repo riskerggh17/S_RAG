@@ -1,4 +1,5 @@
 # md_to_vector.py
+# 运行此代码，离线重置初始向量数据库
 import sys
 from pathlib import Path
 project_root = Path(__file__).parent.parent

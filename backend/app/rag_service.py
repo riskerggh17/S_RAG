@@ -1,13 +1,20 @@
 # rag_service.py
 # rag集成服务
+import sys
+from pathlib import Path
+project_root = Path(__file__).parent.parent
+# 把根目录加入系统路径
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+
 import asyncio
 import json
 from typing import List, Dict, Any, AsyncGenerator, Optional
-from llm import HybridLLMClient
-from models import load_model_and_tokenizer, get_embeddings
-from database import collection
-from config import BGE_M3_MODEL
-from schemas import SourceItem
+from app.llm import HybridLLMClient
+from app.models import load_model_and_tokenizer, get_embeddings
+from app.database import collection
+from app.config import BGE_M3_MODEL
+from app.schemas import SourceItem
 import threading
 
 # 全局变量，避免重复加载模型

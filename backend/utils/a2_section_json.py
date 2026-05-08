@@ -4,6 +4,7 @@ import json
 import time
 import pandas as pd
 import tiktoken
+import hashlib
 from tqdm import tqdm
 from functools import lru_cache
 from typing import List, Tuple, Dict, Any
@@ -260,6 +261,22 @@ def merge_small_chunks(final_chunks: list) -> List[Dict[str, Any]]:
     return merged_chunks
     
 
+def generate_stable_id(path: str, content: str, index: int) -> str:
+    """
+    生成稳定的 Chunk ID
+    策略：md5(文件路径) + _ + md5(内容前100字符)
+    这样即使文件其他部分变动，只要这个块内容没变，ID 就不变
+    """
+    # 1. 文件路径哈希 (确保不同文件的相同内容 ID 不同)
+    path_hash = hashlib.md5(path.encode('utf-8')).hexdigest()[:8]
+    
+    # 2. 内容哈希 (确保内容不变 ID 就不变)
+    # 取前 100 字符足以区分大部分块，避免长文本哈希开销
+    content_sample = content[:100] if content else ""
+    content_hash = hashlib.md5(content_sample.encode('utf-8')).hexdigest()[:8]
+    
+    return f"{path_hash}_{content_hash}"
+
 
 def smart_section_json(raw_datas: list) -> list:
     """
@@ -304,7 +321,7 @@ def smart_section_json(raw_datas: list) -> list:
             # 情况1 总token未超限
             if total_tokens <= MAX_CHUNK_SIZE:
                 chunk.metadata['token_count'] = total_tokens
-                chunk.metadata['has_code_blocks'] = placeholder_in_chunk
+                chunk.metadata['has_code_blocks'] = bool(placeholder_in_chunk)
                 # 恢复代码块
                 chunk.page_content = recover_code_block(chunk.page_content, code_map)
                 final_chunks.append(chunk)
@@ -356,7 +373,7 @@ def smart_section_json(raw_datas: list) -> list:
                             metadata={**chunk.metadata}
                         )
                         new_chunk.metadata['token_count'] = sub_total_tokens
-                        new_chunk.metadata['has_code_blocks'] = sub_placeholders
+                        new_chunk.metadata['has_code_blocks'] = bool(sub_placeholders)
                         final_chunks.append(new_chunk)
     final_chunks =  merge_small_chunks(final_chunks)
     # print("✅ 小chunk合并完成。")
@@ -366,6 +383,11 @@ def smart_section_json(raw_datas: list) -> list:
         # 1 修复内容
         repaired_content = restore_code_block(chunk.page_content)
         # 2 重新构建Document
+        stable_id = generate_stable_id(
+            path=chunk.metadata.get('path', ''), 
+            content=repaired_content
+        )
+        chunk.metadata['chunk_id'] = stable_id
         repaired_chunk = Document(
             page_content=repaired_content,
             metadata=chunk.metadata
@@ -391,21 +413,22 @@ def save_to_json(chunks, output_path="processed_chunks.json"):
     print(f"📝 正在序列化 {len(chunks)} 个切片...")
     
     for i, chunk in tqdm(enumerate(chunks), desc="处理中", total=len(chunks)):
+        content = chunk.page_content
         # 构建数据结构
         item = {
             # 1. 核心文本内容
-            "text": chunk.page_content,
+            "text": content,
             # 2. 元数据信息 (完全保留你指定的字段)
             "metadata": {
                 "id": chunk.metadata.get('id'),
                 "source": chunk.metadata.get('source'),
                 "token_count":chunk.metadata.get('token_count'),
+                "chunk_id": chunk.metadata.get('chunk_id'),
                 "category": chunk.metadata.get('category'),
                 "path": chunk.metadata.get('path')
             },
-            
             # 3. 全局唯一ID (用于向量库去重或索引)
-            "chunk_id": f"{chunk.metadata.get('id')}_chunk_{i}"
+            "chunk_id": chunk.metadata.get('chunk_id')
         }
         json_data.append(item)
     
