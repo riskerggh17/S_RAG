@@ -103,7 +103,7 @@ def load_json(clean_data) -> list:
                         print(f"文件 {t_json} 格式错误")
             except Exception as e:
                 print(f"文件 {t_json} 加载失败：{e}")
-    print(f"✅ 数据加载完成，共 {len(raw_data)} 条数据。")
+    # print(f"✅ 数据加载完成，共 {len(raw_data)} 条数据。")
     return raw_data
 
 
@@ -266,7 +266,7 @@ def smart_section_json(raw_datas: list) -> list:
     切片json数据
     """
     final_chunks = []
-    for raw_data in tqdm(raw_datas, desc='切片中...'):
+    for raw_data in raw_datas:
         content = raw_data.get('content')
         if not content:
             continue
@@ -359,7 +359,7 @@ def smart_section_json(raw_datas: list) -> list:
                         new_chunk.metadata['has_code_blocks'] = sub_placeholders
                         final_chunks.append(new_chunk)
     final_chunks =  merge_small_chunks(final_chunks)
-    print("✅ 小chunk合并完成。")
+    # print("✅ 小chunk合并完成。")
     # 修复代码块格式
     repaired_chunks = []
     for chunk in final_chunks:
@@ -371,7 +371,7 @@ def smart_section_json(raw_datas: list) -> list:
             metadata=chunk.metadata
         )
         repaired_chunks.append(repaired_chunk)
-    print("✅ 代码块格式修复完成。")
+    # print("✅ 代码块格式修复完成。")
     return repaired_chunks
 
 

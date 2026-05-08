@@ -22,7 +22,7 @@ def clean_chain(source: str='docker'):
         folder_ = RAW_DATA / folder_name
         folder_n = [folder.name for folder in folder_.glob("*/")]
         for f in folder_n:
-            cleaner = MDCleaner(source_dir=RAW_DATA / folder_name /f, output_file=CLEANED_DATA / f"docker_{f}.json", source=source)
+            cleaner = MDCleaner(source_dir=RAW_DATA / folder_name /f, output_file=CLEANED_DATA / f"docker_{f}.json", source=source, category="docker")
             # 执行清洗
             cleaner.clean()
     # 2 切片

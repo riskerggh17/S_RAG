@@ -63,10 +63,10 @@ class MDCleaner:
         failed_count = 0
         # 构建 glob 搜索路径
         search_pattern = os.path.join(self.source_dir, "**", "*.md").replace("\\", "/")
-        print(f"🔍 正在扫描: {search_pattern}")
+        # print(f"🔍 正在扫描: {search_pattern}")
         file_list = glob.glob(search_pattern, recursive=True)
         if not file_list:
-            print(f"⚠️ 警告：在 {self.source_dir} 中未找到任何 Markdown 文件。")
+            # print(f"⚠️ 警告：在 {self.source_dir} 中未找到任何 Markdown 文件。")
             return
         for file_path in tqdm(file_list, desc="🧹 正在清洗文件", total=len(file_list), unit="file"):
             try:
@@ -90,14 +90,14 @@ class MDCleaner:
                 
             except Exception as e:
                 failed_count += 1
-                print(f"❌ 处理失败 {file_path}: {file_path}")
-                print(f"   错误详情: {e}")
+                # print(f"❌ 处理失败 {file_path}: {file_path}")
+                # print(f"   错误详情: {e}")
         
         if cleaned_data:
             # 写入 JSON 文件
             with open(self.output_file, 'w', encoding='utf-8') as f:
                 json.dump(cleaned_data, f, indent=2, ensure_ascii=False)
-            print(f"💾 数据已保存至: {self.output_file}")
+            # print(f"💾 数据已保存至: {self.output_file}")
         else:
             print("\n⚠️ 未生成任何有效数据，跳过保存。")
 

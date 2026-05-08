@@ -9,6 +9,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # 1 data
 # 原始数据
 RAW_DATA = BASE_DIR / "raw_data" / "docker"
+# 处理后数据
+DEALED_DATA = BASE_DIR / "data" / "dealed_data"
 # 清洗后数据
 CLEANED_DATA = BASE_DIR / "data" / "cleaned_data"
 # 切片数据
