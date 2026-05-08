@@ -29,7 +29,7 @@ def clean_chain(source: str='docker'):
     # 2 切片
     section_json(CLEANED_DATA, SECTIONED_DATA)
     # 3 向量化
-    vectorization(model_path=BGE_M3_MODEL, json_file=SECTIONED_DATA, db_path=CHROMADB_PATH)
+    vectorization(model_path=BGE_M3_MODEL, json_file=SECTIONED_DATA)
 
 if __name__ == "__main__":
     clean_chain()

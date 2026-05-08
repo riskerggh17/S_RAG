@@ -261,21 +261,21 @@ def merge_small_chunks(final_chunks: list) -> List[Dict[str, Any]]:
     return merged_chunks
     
 
-def generate_stable_id(path: str, content: str, index: int) -> str:
+def generate_stable_id(path: str, content: str, index: int=0) -> str:
     """
     生成稳定的 Chunk ID
-    策略：md5(文件路径) + _ + md5(内容前100字符)
+    策略：md5(文件路径) + _ + md5
     这样即使文件其他部分变动，只要这个块内容没变，ID 就不变
     """
     # 1. 文件路径哈希 (确保不同文件的相同内容 ID 不同)
-    path_hash = hashlib.md5(path.encode('utf-8')).hexdigest()[:8]
+    path_hash = hashlib.md5(path.encode('utf-8')).hexdigest()[:10]
     
     # 2. 内容哈希 (确保内容不变 ID 就不变)
     # 取前 100 字符足以区分大部分块，避免长文本哈希开销
-    content_sample = content[:100] if content else ""
-    content_hash = hashlib.md5(content_sample.encode('utf-8')).hexdigest()[:8]
+    content_sample = content[:200] if content else ""
+    content_hash = hashlib.md5(content_sample.encode('utf-8')).hexdigest()[:10]
     
-    return f"{path_hash}_{content_hash}"
+    return f"{path_hash}_{content_hash}_{index}"
 
 
 def smart_section_json(raw_datas: list) -> list:
@@ -379,13 +379,14 @@ def smart_section_json(raw_datas: list) -> list:
     # print("✅ 小chunk合并完成。")
     # 修复代码块格式
     repaired_chunks = []
-    for chunk in final_chunks:
+    for i, chunk in enumerate(final_chunks):
         # 1 修复内容
         repaired_content = restore_code_block(chunk.page_content)
         # 2 重新构建Document
         stable_id = generate_stable_id(
             path=chunk.metadata.get('path', ''), 
-            content=repaired_content
+            content=repaired_content,
+            index=i
         )
         chunk.metadata['chunk_id'] = stable_id
         repaired_chunk = Document(
@@ -394,6 +395,7 @@ def smart_section_json(raw_datas: list) -> list:
         )
         repaired_chunks.append(repaired_chunk)
     # print("✅ 代码块格式修复完成。")
+
     return repaired_chunks
 
 

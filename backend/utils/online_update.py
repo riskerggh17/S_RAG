@@ -99,21 +99,21 @@ class MDcleaner:
             return None
 
 
-def generate_stable_id(path: str, content: str, index: int) -> str:
+def generate_stable_id(path: str, content: str, index: int=0) -> str:
     """
     生成稳定的 Chunk ID
     策略：md5(文件路径) + _ + md5(内容前100字符)
     这样即使文件其他部分变动，只要这个块内容没变，ID 就不变
     """
     # 1. 文件路径哈希 (确保不同文件的相同内容 ID 不同)
-    path_hash = hashlib.md5(path.encode('utf-8')).hexdigest()[:8]
+    path_hash = hashlib.md5(path.encode('utf-8')).hexdigest()[:10]
     
     # 2. 内容哈希 (确保内容不变 ID 就不变)
     # 取前 100 字符足以区分大部分块，避免长文本哈希开销
-    content_sample = content[:100] if content else ""
-    content_hash = hashlib.md5(content_sample.encode('utf-8')).hexdigest()[:8]
+    content_sample = content if content else ""
+    content_hash = hashlib.md5(content_sample.encode('utf-8')).hexdigest()[:10]
     
-    return f"{path_hash}_{content_hash}"
+    return f"{path_hash}_{content_hash}_{index}"
 
 async def increment_vectorization(
         texts: list,
