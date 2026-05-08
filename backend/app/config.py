@@ -16,6 +16,14 @@ SECTIONED_DATA = BASE_DIR / "data" / "sectioned_data" / "sectioned_data.json"
 # chromadb
 CHROMADB_PATH = BASE_DIR / "data" / "cdb"
 
-# 2 model
+# 2 文档
+# 上传数据
+UPLOAD_DATA = BASE_DIR / "data" / "upload_data"
+# 限制
+FILE_MAX_SIZE = 1024 * 1024 * 10  # 限制10M
+# 文件头
+ALLOWED_FILE_TYPES = [".md", ".txt", ".pdf"]
+
+# 3 model
 BGE_M3_MODEL = BASE_DIR / "models" / "bge-m3"
 BGE_M3_UNS_MODEL = BASE_DIR / "models" / "bge-m3-unsupervised"

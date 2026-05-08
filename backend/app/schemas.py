@@ -3,6 +3,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any, List
 
+
 # 定义单条参考来源的格式
 class SourceItem(BaseModel):
     text: str = Field(..., description="检索到的文档原文片段")
@@ -20,3 +21,14 @@ class QueryResponse(BaseModel):
     answer: str = Field(..., description="大模型生成的回答")
     sources: List[SourceItem] = Field(default_factory=list, description="支撑该回答的参考文档列表")
 
+
+# 上传文件
+# 文件上传模型
+class UploadResponse(BaseModel):
+    success: bool = Field(..., description="上传是否成功")
+    filename: str = Field(..., description="保存的文件名")
+    message: str = Field(..., description="处理结果信息")
+
+# 刷新cdb数据库
+class RefreshRequest(BaseModel):
+    requester: str = Field(..., description="标识是谁发起请求")

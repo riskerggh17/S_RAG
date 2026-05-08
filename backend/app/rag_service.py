@@ -155,9 +155,6 @@ async def generate_answer(question: str, system_prompt: str, stream: bool = Fals
 
 
 
-
-
-
 async def rag_service(question: str, source: str = 'all') -> Dict[str, Any]:
     """
     RAG服务：非流式入口
@@ -228,3 +225,16 @@ async def rag_service_stream(question: str, source: str = 'all') -> AsyncGenerat
         print(f"❌ [Stream] 流式服务出错: {e}")
         error_data = json.dumps({"type": "error", "content": str(e)})
         yield f"data: {error_data}\n\n"
+
+
+
+# 上传文件
+
+
+
+
+
+
+
+
+
