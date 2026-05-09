@@ -11,3 +11,9 @@ from app.config import CHROMADB_PATH
 
 client = chromadb.PersistentClient(path=str(CHROMADB_PATH))
 collection = client.get_or_create_collection(name="raw_md")
+
+# 向量数据库概览
+
+
+
+

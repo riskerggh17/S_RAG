@@ -1,7 +1,11 @@
 :root {
   --text: #6b6375;
   --text-h: #08060d;
-  --bg: #fff;
+  --bg: #dfd8d8;
+  --bg-color: #ffffff;       /* 背景白色 */
+  --text-color: #000000;     /* 文字黑色 */
+  --sidebar-bg: #7f848c;     /* 侧边栏浅灰 */
+  --border-color: #e5e7eb;   /* 边框浅灰 */
   --border: #e5e4e7;
   --code-bg: #f4f3ec;
   --accent: #aa3bff;
@@ -35,6 +39,10 @@
     --text: #9ca3af;
     --text-h: #f3f4f6;
     --bg: #16171d;
+    --bg-color: #18181b;     /* 背景深色 (Zinc-900) */
+    --text-color: #ffffff;   /* 文字白色 */
+    --sidebar-bg: #000000;   /* 侧边栏深灰 (Zinc-800) */
+    --border-color: #3f3f46; /* 边框深灰 */
     --border: #2e303a;
     --code-bg: #1f2028;
     --accent: #c084fc;
@@ -51,15 +59,15 @@
 }
 
 body {
+  background-color: var(--bg-color);
   margin: 0;
 }
 
 #root {
-  width: 1126px;
+  width: auto;
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
-  border-inline: 1px solid var(--border);
   min-height: 100svh;
   display: flex;
   flex-direction: column;

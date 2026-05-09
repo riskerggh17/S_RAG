@@ -1,5 +1,172 @@
-button {
-  padding: 10px 20px;
-  font-size: 18px;
+/* 全局容器 */
+.app-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 左侧边栏 */
+.sidebar {
+  width: 260px;
+  background-color: var(--sidebar-bg);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+/* 折叠状态 */
+.sidebar.collapsed {
+  width: 0;
+  border-right: none;
+  overflow: hidden;
+}
+
+/* 侧边栏头部 */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+}
+
+/* 标题文字 */
+.sidebar-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-color);
+  letter-spacing: -0.5px;
+}
+
+/* 折叠按钮 */
+.toggle-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #6b7280;
+  transition: all 0.2s ease;
+}
+
+.toggle-btn:hover {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+/* 展开按钮 */
+.expand-btn {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #6b7280;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  z-index: 100;
+}
+
+.expand-btn:hover {
+  background-color: #f9fafb;
+  color: #374151;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 侧边栏内容 */
+.sidebar-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+
+/* 容器用于控制边距 */
+.new-chat-container {
+  padding: 0 16px; /* 左右留白 */
+  margin-bottom: 20px; /* 与下方内容的间距 */
+}
+
+/* 按钮主体 */
+.new-chat-btn {
+  width: 100%;             /* 宽度占满侧边栏 */
+  height: 44px;            /* 高度 */
+  background-color: #2a2a2a; /* 深灰色背景 (模仿截图) */
+  color: white;            /* 白色文字 */
+  border: 1px solid #444;  /* 深灰色边框 */
+  border-radius: 12px;     /* 大圆角 */
+  
+  display: flex;           /* 使用 Flex 布局让图标和文字居中 */
+  align-items: center;     /* 垂直居中 */
+  justify-content: center; /* 水平居中 */
+  gap: 8px;                /* 图标和文字之间的间距 */
+  
+  cursor: pointer;         /* 鼠标悬停变小手 */
+  font-size: 14px;         /* 文字大小 */
+  font-weight: 500;        /* 字体粗细 */
+  transition: background-color 0.2s, transform 0.1s; /* 平滑过渡效果 */
+}
+
+/* 鼠标悬停效果 */
+.new-chat-btn:hover {
+  background-color: #3a3a3a; /* 稍微变亮一点 */
+}
+
+/* 点击效果 */
+.new-chat-btn:active {
+  transform: scale(0.98); /* 轻微缩小 */
+}
+
+/* 图标样式（可选） */
+.new-chat-btn .icon {
+  font-size: 16px;
+}
+
+
+
+
+
+
+
+
+
+/* 主内容区 */
+.main-content {
+  flex: 1; /* 占据侧边栏以外的所有剩余宽度 */
+  display: flex;
+  flex-direction: column; /* 核心：让子元素从上到下垂直排列 */
+  height: 100vh; /* 强制高度占满整个视口 */
+  background-color: var(--bg-color);
+  position: relative; /* 为了定位折叠按钮 */
+  overflow: hidden; /* 防止主容器本身出现滚动条 */
+}
+
+/* 上方：主要展示区 */
+.display-area {
+  flex: 1; /* 核心：自动占据剩余的所有高度 */
+  padding: 20px;
+  overflow-y: auto; /* 核心：内容超出时，只有这个区域内部出现滚动条 */
+}
+
+/* 下方：用户输入区 */
+.input-area {
+  height: 80px; /* 固定高度（你可以根据需要调整） */
+  padding: 15px 20px;
+  display: flex;
+  align-items: center; /* 让输入框垂直居中 */
+  flex-shrink: 0; /* 防止被压缩，始终保持 80px 高度 */
 }
