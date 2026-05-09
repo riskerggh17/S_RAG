@@ -7,6 +7,8 @@ project_root = Path(__file__).parent.parent
 if str(project_root) not in sys.path:
     sys.path.insert(0, str(project_root))
 import chromadb
+import sqlite3
+
 from app.config import CHROMADB_PATH
 
 client = chromadb.PersistentClient(path=str(CHROMADB_PATH))

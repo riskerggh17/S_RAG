@@ -60,38 +60,62 @@
   color: #374151;
 }
 
-/* 展开按钮 */
-.expand-btn {
-  position: fixed;
-  top: 16px;
-  left: 16px;
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  color: #6b7280;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
-  z-index: 100;
-}
-
-.expand-btn:hover {
-  background-color: #f9fafb;
-  color: #374151;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
 
 /* 侧边栏内容 */
 .sidebar-content {
   flex: 1;
   padding: 16px;
   overflow-y: auto;
+}
+
+/* 历史会话容器 */
+.history-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.history-header {
+  padding: 8px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.history-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* 底部用户信息区域 */
+.sidebar-footer {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 8px;
+  padding: 16px;
+}
+
+/* 用户信息 */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.user-info:hover {
+  background-color: #f9fafb;
 }
 
 
@@ -136,14 +160,6 @@
   font-size: 16px;
 }
 
-
-
-
-
-
-
-
-
 /* 主内容区 */
 .main-content {
   flex: 1; /* 占据侧边栏以外的所有剩余宽度 */
@@ -155,6 +171,43 @@
   overflow: hidden; /* 防止主容器本身出现滚动条 */
 }
 
+.main-header {
+  height: 60px; /* 固定高度 */
+  padding: 0 20px; /* 左右内边距 */
+  display: flex;
+  align-items: center; /* 垂直居中 */
+  background-color: var(--bg-color); /* 确保背景色一致 */
+  flex-shrink: 0; /* 防止被压缩 */
+}
+/* 小号的展开按钮 (为了适应顶部栏的高度) */
+.expand-btn-small {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background-color: var(--sidebar-bg); /* 使用侧边栏背景色或透明 */
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--text-color);
+  margin-right: 12px; /* 与标题的间距 */
+  transition: all 0.2s;
+}
+
+.expand-btn-small:hover {
+  background-color: var(--sidebar-bg);
+  filter: brightness(0.95);
+}
+/* 内容包裹 */
+.content-wrapper {
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* 防止外层滚动 */
+  position: relative;
+}
 /* 上方：主要展示区 */
 .display-area {
   flex: 1; /* 核心：自动占据剩余的所有高度 */

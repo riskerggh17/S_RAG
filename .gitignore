@@ -53,3 +53,32 @@ Thumbs.db
 /frontend/node_modules/
 /lfs/log/
 
+
+# -------------------------------------------------
+# 3. Vue/Node 专用规则 (关键修改部分)
+# -------------------------------------------------
+
+# 忽略 Vue 的依赖包 (必须加前缀)
+frontend-vue/node_modules/
+
+# 忽略 Vue 的打包产物 (必须加前缀)
+frontend-vue/dist/
+
+# 忽略 Vue 的开发服务器缓存 (Vite 特有)
+frontend-vue/node_modules/.vite/
+
+# 忽略 Vue 的环境变量文件 (通常包含密钥，建议忽略)
+frontend-vue/.env.local
+frontend-vue/.env.*.local
+
+# 如果你不想上传 Vue 的锁文件 (可选，建议上传锁文件以保证版本一致)
+# frontend-vue/package-lock.json
+
+# 忽略 Vue 的日志
+frontend-vue/npm-debug.log*
+frontend-vue/yarn-debug.log*
+frontend-vue/yarn-error.log*
+
+
+
+

@@ -6,6 +6,8 @@
   --text-color: #000000;     /* 文字黑色 */
   --sidebar-bg: #7f848c;     /* 侧边栏浅灰 */
   --border-color: #e5e7eb;   /* 边框浅灰 */
+  --botten-color: #090f1c;
+  --botten-color-bg: #1a1919;
   --border: #e5e4e7;
   --code-bg: #f4f3ec;
   --accent: #aa3bff;
@@ -44,6 +46,8 @@
     --sidebar-bg: #000000;   /* 侧边栏深灰 (Zinc-800) */
     --border-color: #3f3f46; /* 边框深灰 */
     --border: #2e303a;
+    --botten-color: #080f1e;
+    --botten-color-bg: #ffffff;
     --code-bg: #1f2028;
     --accent: #c084fc;
     --accent-bg: rgba(192, 132, 252, 0.15);
