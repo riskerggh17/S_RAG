@@ -29,3 +29,7 @@ ALLOWED_FILE_TYPES = [".md", ".txt", ".pdf"]
 # 3 model
 BGE_M3_MODEL = BASE_DIR / "models" / "bge-m3"
 BGE_M3_UNS_MODEL = BASE_DIR / "models" / "bge-m3-unsupervised"
+
+
+# 4 sqlite数据库地址
+SQLITE_DB = "sqlite:///" + str(BASE_DIR / 'backend' / "data" / "sqlite.db")
