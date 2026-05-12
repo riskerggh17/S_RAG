@@ -1,0 +1,102 @@
+/* src/assets/styles/global.css */
+
+/* 1. 定义全局变量 */
+:root {
+  /* --- 颜色调色板 --- */
+  /* 主色调：深邃蓝紫，适合科技感暗黑风 */
+  --color-primary: #6366f1; /* Indigo 500 */
+  --color-primary-hover: #4f46e5;
+  --color-primary-light: rgba(99, 102, 241, 0.1);
+
+  /* 语义色 */
+  --color-success: #10b981; /* Emerald */
+  --color-warning: #f59e0b; /* Amber */
+  --color-error: #ef4444;   /* Red */
+  --color-info: #3b82f6;    /* Blue */
+
+  /* --- 背景色层次 --- */
+  --bg-base: #0f172a;       /* Slate 900 - 页面最底层背景 */
+  --bg-surface: #1e293b;    /* Slate 800 - 卡片、侧边栏背景 */
+  --bg-surface-hover: #334155; /* Slate 700 - 悬停状态 */
+  --bg-overlay: rgba(0, 0, 0, 0.5); /* 遮罩层 */
+
+  /* --- 文本颜色 --- */
+  --text-primary: #f8fafc;  /* Slate 50 - 主要标题 */
+  --text-secondary: #94a3b8; /* Slate 400 - 次要文本、描述 */
+  --text-muted: #64748b;     /* Slate 500 - 禁用、提示 */
+  --text-inverse: #0f172a;   /* 用于在亮色背景上的深色文字 */
+
+  /* --- 边框与分割线 --- */
+  --border-color: #334155;  /* Slate 700 */
+
+  /* --- 尺寸与间距 --- */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* --- 阴影 (暗黑模式需要更柔和的阴影) --- */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+}
+
+/* 2. 全局基础重置 */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  /* 应用背景色 */
+  background-color: var(--bg-base);
+  /* 应用字体颜色 */
+  color: var(--text-primary);
+  /* 字体平滑 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* 字体栈 (推荐加上 Inter 或系统字体) */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  overflow: hidden; /* 防止双滚动条，具体看布局需求 */
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+  /* 确保 App 根节点填满屏幕 */
+  display: flex;
+  flex-direction: column;
+}
+
+/* 3. 常用工具类 (可选) */
+.text-primary { color: var(--color-primary); }
+.text-success { color: var(--color-success); }
+.text-error { color: var(--color-error); }
+
+.bg-surface { background-color: var(--bg-surface); }
+.border-base { border: 1px solid var(--border-color); }
+
+/* 4. 滚动条样式 (暗黑系美化) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-muted);
+}
